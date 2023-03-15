@@ -44,7 +44,7 @@ You can run this app with and without docker
 
 ### With Docker
 
-1. `docker run -d -p 8080:8080 rofl256/whiteboard`
+1. `docker run -d -p 8080:8080 purpleview/whiteboard`
 2. Surf to http://YOURIP:8080
 
 ## Development
@@ -125,7 +125,7 @@ To run the project with custom settings:
 3. Run the project with your custom configuration (it will be merged into the default one):
 
 - locally: `node scripts/server.js --config=./config.run.yml`
-- docker: `docker run -d -p 8080:8080 -v $(pwd)/config.run.yml:/config.run.yml:ro rofl256/whiteboard --config=/config.run.yml`
+- docker: `docker run -d -p 8080:8080 -v $(pwd)/config.run.yml:/config.run.yml:ro purpleview/whiteboard --config=/config.run.yml`
 
 ### Highlights
 

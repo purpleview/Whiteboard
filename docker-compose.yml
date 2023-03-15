@@ -1,7 +1,7 @@
 version: "3.1"
 services:
   whiteboard:
-    image: rofl256/whiteboard
+    image: purpleview/whiteboard
     restart: always
     ports:
       - "8080:8080/tcp"

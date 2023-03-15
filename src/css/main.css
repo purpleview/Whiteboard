@@ -19,12 +19,9 @@ body {
 
 .btn-group button {
     background: transparent;
-    border: 2px solid #636060;
-    margin: -1px;
-    /* Green border */
-    color: black;
-    /* White text */
-    padding: 11px 14px;
+    border: 1px solid transparent;
+    color: #3b3b3a;
+    padding: 11px;
     /* Some padding */
     cursor: pointer;
     /* Pointer/hand icon */
@@ -47,8 +44,8 @@ body {
 @media (min-device-width: 1024px) {
     .btn-group button {
         font-size: 1.2em;
-        height: 45px;
-        width: 50px;
+        height: 44px;
+        width: 44px;
     }
 
     .minGroup {
@@ -89,7 +86,8 @@ button::-moz-focus-inner {
 /* Add a background color on hover */
 
 .btn-group button:hover {
-    background-color: #9a9a9a;
+    background: #eeeeee;
+    color: #000000;
 }
 
 button {
@@ -97,15 +95,17 @@ button {
 }
 
 .btn-group {
-    background-color: #808080ab;
+    background-color: #80808060;
     margin-left: 5px;
     margin-bottom: 5px;
     float: left;
     position: relative;
+    border: 1px solid #444444;
 }
 
 .whiteboard-tool.active:not(:disabled) {
     background: var(--selected-icon-bg-color);
+    border: 1px solid #444444;
 }
 
 #whiteboardThicknessSlider {

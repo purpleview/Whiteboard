@@ -44,6 +44,31 @@ if (title) {
     document.title = decodeURIComponent(title);
 }
 
+const lang = urlParams.get("lang") || "de";
+if (lang === "de") {
+    $("#whiteboardLockBtn").attr("title", "Whiteboard bearbeiten");
+    $("#whiteboardUnlockBtn").attr("title", "Whiteboard sperren");
+    $("#whiteboardTrashBtn").attr("title", "Whiteboard leeren");
+    $("#whiteboardTrashBtnConfirm").attr("title", "Leeren bestätigen...");
+    $("#whiteboardUndoBtn").attr("title", "Rückgängig machen");
+    $("#whiteboardRedoBtn").attr("title", "Wiederholen");
+    $("#whiteboardMouseBtn").attr("title", "Zeiger");
+    $("#whiteboardHandBtn").attr("title", "Ausschnitt verschieben");
+    $("#whiteboardSelectBtn").attr("title", "Bereich auswählen");
+    $("#whiteboardPenBtn").attr("title", "Farbpinsel");
+    $("#whiteboardLineBtn").attr("title", "Linie zeichnen");
+    $("#whiteboardRectangleBtn").attr("title", "Rechteck zeichnen");
+    $("#whiteboardCircleBtn").attr("title", "Kreis zeichnen");
+    $("#whiteboardEraserBtn").attr("title", "Radierer");
+    $("#whiteboardThicknessSlider").attr("title", "Pinselstärke");
+    $("#whiteboardTextBtn").attr("title", "Text");
+    $("#whiteboardStickyBtn").attr("title", "Haftnotiz");
+    $("#textboxBackgroundColorPickerBtn").attr("title", "Hintergrundfarbe");
+    $("#addImgToCanvasBtn").attr("title", "Bild einfügen");
+    $("#saveAsImageBtn").attr("title", "Whiteboard als Bild speichern");
+    $("#minMaxBtn").attr("title", "Buttonleiste ein-/ausblenden");
+}
+
 const subdir = getSubDir();
 let signaling_socket;
 
@@ -61,7 +86,7 @@ function main() {
 
         signaling_socket.on("whiteboardInfoUpdate", (info) => {
             InfoService.updateInfoFromServer(info);
-            whiteboard.updateSmallestScreenResolution();
+            whiteboard.updateSmallestScreenResolution(lang);
         });
 
         signaling_socket.on("drawToWhiteboard", function (content) {
@@ -91,8 +116,8 @@ function main() {
 
 function showBasicAlert(html, newOptions) {
     var options = {
-        header: "INFO MESSAGE",
-        okBtnText: "Ok",
+        header: "Information",
+        okBtnText: "OK",
         headercolor: "#d25d5d",
         hideAfter: false,
         onOkClick: false,
@@ -107,7 +132,7 @@ function showBasicAlert(html, newOptions) {
             '<div style="width: 30%; margin: auto; background: #aaaaaa; border-radius: 5px; font-size: 1.2em; border: 1px solid gray;">' +
             '<div style="border-bottom: 1px solid #676767; background: ' +
             options["headercolor"] +
-            '; padding-left: 5px; font-size: 0.8em;">' +
+            '; padding-left: 5px; font-size: 1em;">' +
             options["header"] +
             '<div style="float: right; margin-right: 4px; color: #373737; cursor: pointer;" class="closeAlert">x</div></div>' +
             '<div style="padding: 10px;" class="htmlcontent"></div>' +
@@ -333,8 +358,12 @@ function initWhiteboard() {
             .off("click")
             .click(function () {
                 if (ReadOnlyService.readOnlyActive) return;
-                showBasicAlert(`Please drag the image into the browser.<br>
-                Or upload here: <input type="file" id="manualFileUpload" name="myfile" />`);
+                showBasicAlert(
+                    (lang === "de"
+                        ? "Bitte wählen Sie ein Bild oder PDF aus oder verwenden Sie Drag&Drop."
+                        : "Please select an image or PDF or use Drag&Drop.") +
+                        `<input type="file" id="manualFileUpload" style="margin-top:1em" name="myfile" />`
+                );
                 document.getElementById("manualFileUpload").addEventListener(
                     "change",
                     function (e) {
@@ -347,7 +376,7 @@ function initWhiteboard() {
                 );
             });
 
-        // save image as imgae
+        // save image as image
         $("#saveAsImageBtn")
             .off("click")
             .click(function () {
@@ -758,12 +787,12 @@ function initWhiteboard() {
 
                     isValidImageUrl(fileUrl, function (isImage) {
                         if (isImage && isImageFileName(url)) {
-                            whiteboard.addImgToCanvasByUrl(fileUrl);
+                            whiteboard.addImgToCanvasByUrl(lang, fileUrl);
                         } else {
                             isValidImageUrl(url, function (isImage) {
                                 if (isImage) {
                                     if (isImageFileName(url) || url.startsWith("http")) {
-                                        whiteboard.addImgToCanvasByUrl(url);
+                                        whiteboard.addImgToCanvasByUrl(lang, url);
                                     } else {
                                         uploadImgAndAddToWhiteboard(url); //Last option maybe its base64
                                     }
@@ -849,7 +878,7 @@ function initWhiteboard() {
           </div>
           <div class="picker_sample"></div>
           <div class="picker_done">
-            <button>Ok</button>
+            <button>OK</button>
           </div>
           <div class="picker_cancel">
             <button>Cancel</button>
@@ -965,6 +994,7 @@ function initWhiteboard() {
                 const filename = `${correspondingReadOnlyWid}_${date}.png`;
                 const rootUrl = document.URL.substr(0, document.URL.lastIndexOf("/"));
                 whiteboard.addImgToCanvasByUrl(
+                    lang,
                     `${rootUrl}/uploads/${correspondingReadOnlyWid}/${filename}`
                 ); //Add image to canvas
                 console.log("Image uploaded!");
@@ -1069,7 +1099,9 @@ function initWhiteboard() {
 
             if (!imgItemFound && whiteboard.tool != "text" && whiteboard.tool != "stickynote") {
                 showBasicAlert(
-                    "Please Drag&Drop the image or pdf into the Whiteboard. (Browsers don't allow copy+past from the filesystem directly)"
+                    lang === "de"
+                        ? "Bitte ziehen Sie das Bild oder die PDF in das Whiteboard. (Browser erlauben kein Kopieren aus dem Dateisystem)"
+                        : "Please Drag&Drop the image or pdf into the whiteboard. (Browsers don't allow copy/paste from the filesystem directly)"
                 );
             }
         }

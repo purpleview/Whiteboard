@@ -878,9 +878,10 @@ const whiteboard = {
             })
         );
     },
-    addImgToCanvasByUrl: function (url) {
+    addImgToCanvasByUrl: function (lang, url) {
         var _this = this;
         var oldTool = _this.tool;
+        _this.lang = lang;
 
         const { imageURL } = ConfigService;
         var finalURL = url;
@@ -897,9 +898,13 @@ const whiteboard = {
         var imgDiv = $(
             '<div class="dragMe" style="border: 2px dashed gray; position:absolute; left:200px; top:200px; min-width:160px; min-height:100px; cursor:move;">' +
                 '<div style="position:absolute; right:5px; top:3px;">' +
-                '<button draw="1" style="margin: 0px 0px; background: #03a9f4; padding: 5px; margin-top: 3px; color: white;" class="addToCanvasBtn btn btn-default">Draw to canvas</button> ' +
-                '<button draw="0" style="margin: 0px 0px; background: #03a9f4; padding: 5px; margin-top: 3px; color: white;" class="addToBackgroundBtn btn btn-default">Add to background</button> ' +
-                '<button style="margin: 0px 0px; background: #03a9f4; padding: 5px; margin-top: 3px; color: white;" class="xCanvasBtn btn btn-default">x</button>' +
+                '<button draw="1" style="margin: 0px 0px; background: #03a9f4; padding: 5px; margin-top: 3px; color: white;" class="addToCanvasBtn btn btn-default">' +
+                (lang === "de" ? "Zeichnen" : "Draw to canvas") +
+                "</button> " +
+                '<button draw="0" style="margin: 0px 0px; background: #03a9f4; padding: 5px; margin-top: 3px; color: white;" class="addToBackgroundBtn btn btn-default">' +
+                (lang === "de" ? "Als Hintergrund" : "Add to background") +
+                "</button> " +
+                '<button style="margin: 0px 0px; background: #03a9f4; padding: 5px; margin-top: 3px; color: white;" class="xCanvasBtn btn btn-default">X</button>' +
                 "</div>" +
                 '<i style="position:absolute; bottom: -4px; right: 2px; font-size: 2em; color: gray; transform: rotate(-45deg);" class="fas fa-sort-down" aria-hidden="true"></i>' +
                 '<div class="rotationHandle" style="position:absolute; bottom: -30px; left: 0px; width:100%; text-align:center; cursor:ew-resize;"><i class="fa fa-undo"></i></div>' +
@@ -1299,7 +1304,9 @@ const whiteboard = {
             _this.setTextboxBackgroundColor(_this.latestActiveTextBoxId, textboxBackgroundColor);
         }
     },
-    updateSmallestScreenResolution() {
+    updateSmallestScreenResolution(lang) {
+        var _this = this;
+        _this.lang = lang;
         const { smallestScreenResolution } = InfoService;
         const { showSmallestScreenIndicator } = ConfigService;
         if (showSmallestScreenIndicator && smallestScreenResolution) {
@@ -1316,7 +1323,9 @@ const whiteboard = {
                 this.backgroundGrid.append(
                     '<div style="position:absolute; left:' +
                         (width + 5) +
-                        'px; top:0px;">smallest screen participating</div>'
+                        'px; top:0px;">' +
+                        (_this.lang === "de" ? "Kleinster Bildschirm" : "Smallest screen") +
+                        "</div>"
                 );
             }
         }

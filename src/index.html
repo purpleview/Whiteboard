@@ -16,18 +16,18 @@
                 <button
                     id="whiteboardLockBtn"
                     style="background-color: orange"
-                    title="View and Write"
+                    title="Edit whiteboard"
                     type="button"
                 >
                     <i class="fa fa-lock"></i>
                 </button>
-                <button id="whiteboardUnlockBtn" title="View Only" type="button">
+                <button id="whiteboardUnlockBtn" title="Lock whiteboard" type="button">
                     <i class="fa fa-lock-open"></i>
                 </button>
             </div>
 
             <div class="btn-group whiteboard-edit-group">
-                <button id="whiteboardTrashBtn" title="Clear the whiteboard" type="button">
+                <button id="whiteboardTrashBtn" title="Clear whiteboard" type="button">
                     <i class="fa fa-trash"></i>
                 </button>
                 <button
@@ -38,21 +38,28 @@
                 >
                     <i class="fa fa-check"></i>
                 </button>
-                <button id="whiteboardUndoBtn" title="Undo your last step" type="button">
+                <button id="whiteboardUndoBtn" title="Undo" type="button">
                     <i class="fa fa-undo"></i>
                 </button>
-                <button id="whiteboardRedoBtn" title="Redo your last undo" type="button">
+                <button id="whiteboardRedoBtn" title="Redo" type="button">
                     <i class="fa fa-redo"></i>
                 </button>
             </div>
 
             <div class="btn-group whiteboard-edit-group">
-                <button tool="mouse" title="Take the mouse" type="button" class="whiteboard-tool">
+                <button
+                    id="whiteboardMouseBtn"
+                    tool="mouse"
+                    title="Pointer"
+                    type="button"
+                    class="whiteboard-tool"
+                >
                     <i class="fa fa-mouse-pointer"></i>
                 </button>
                 <button
+                    id="whiteboardHandBtn"
                     tool="hand"
-                    title="pan the whiteboard"
+                    title="Move section"
                     type="button"
                     class="whiteboard-tool"
                 >
@@ -60,38 +67,59 @@
                 </button>
 
                 <button
+                    id="whiteboardSelectBtn"
                     style="padding-bottom: 11px"
                     tool="recSelect"
-                    title="Select an area"
+                    title="Select area"
                     type="button"
                     class="whiteboard-tool"
                 >
                     <img src="./images/dottedRec.png" />
                 </button>
                 <button
+                    id="whiteboardPenBtn"
                     tool="pen"
-                    title="Take the pen"
+                    title="Paint brush"
                     type="button"
                     class="whiteboard-tool active"
                 >
                     <i class="fa fa-pencil-alt"></i>
                 </button>
                 <button
+                    id="whiteboardLineBtn"
                     style="padding-bottom: 8px; padding-top: 6px"
                     tool="line"
-                    title="draw a line"
+                    title="Draw a line"
                     type="button"
                     class="whiteboard-tool"
                 >
                     ╱
                 </button>
-                <button tool="rect" title="draw a rectangle" type="button" class="whiteboard-tool">
+                <button
+                    id="whiteboardRectangleBtn"
+                    tool="rect"
+                    title="Draw a rectangle"
+                    type="button"
+                    class="whiteboard-tool"
+                >
                     <i class="far fa-square"></i>
                 </button>
-                <button tool="circle" title="draw a circle" type="button" class="whiteboard-tool">
+                <button
+                    id="whiteboardCircleBtn"
+                    tool="circle"
+                    title="Draw a circle"
+                    type="button"
+                    class="whiteboard-tool"
+                >
                     <i class="far fa-circle"></i>
                 </button>
-                <button tool="eraser" title="take the eraser" type="button" class="whiteboard-tool">
+                <button
+                    id="whiteboardEraserBtn"
+                    tool="eraser"
+                    title="Eraser"
+                    type="button"
+                    class="whiteboard-tool"
+                >
                     <i class="fa fa-eraser"></i>
                 </button>
             </div>
@@ -140,12 +168,19 @@
             </div>
 
             <div class="btn-group whiteboard-edit-group">
-                <button tool="text" title="write text" type="button" class="whiteboard-tool">
+                <button
+                    id="whiteboardTextBtn"
+                    tool="text"
+                    title="Text"
+                    type="button"
+                    class="whiteboard-tool"
+                >
                     <i class="fas fa-font"></i>
                 </button>
                 <button
+                    id="whiteboardStickyBtn"
                     tool="stickynote"
-                    title="place a sticky note"
+                    title="Sticky note"
                     type="button"
                     class="whiteboard-tool"
                 >
@@ -154,7 +189,7 @@
                 <button
                     id="textboxBackgroundColorPickerBtn"
                     style="display: none"
-                    title="text background-color"
+                    title="Background color"
                 >
                     <div
                         id="textboxBackgroundColorPicker"
@@ -173,27 +208,8 @@
             </div>
 
             <div class="btn-group whiteboard-edit-group">
-                <button id="addImgToCanvasBtn" title="Upload Image to whiteboard" type="button">
+                <button id="addImgToCanvasBtn" title="Insert image" type="button">
                     <i class="fas fa-image"></i>
-                    <i
-                        style="
-                            position: absolute;
-                            top: 3px;
-                            left: 2px;
-                            color: #000000;
-                            font-size: 0.5em;
-                        "
-                        class="fas fa-upload"
-                    ></i>
-                </button>
-
-                <button
-                    style="position: relative"
-                    id="uploadJsonBtn"
-                    title="Load saved JSON to whiteboard"
-                    type="button"
-                >
-                    <i class="far fa-file-alt"></i>
                     <i
                         style="
                             position: absolute;
@@ -223,57 +239,13 @@
                         class="fas fa-save"
                     ></i>
                 </button>
-                <button
-                    style="position: relative; display: none"
-                    id="uploadWebDavBtn"
-                    title="Save whiteboard to webdav"
-                    type="button"
-                >
-                    <i class="fas fa-globe"></i>
-                    <i
-                        style="
-                            position: absolute;
-                            top: 3px;
-                            left: 2px;
-                            color: #000000;
-                            font-size: 0.5em;
-                        "
-                        class="fas fa-save"
-                    ></i>
-                </button>
-                <button
-                    style="position: relative"
-                    id="saveAsJSONBtn"
-                    title="Save whiteboard as JSON"
-                    type="button"
-                >
-                    <i class="far fa-file-alt"></i>
-                    <i
-                        style="
-                            position: absolute;
-                            top: 3px;
-                            left: 2px;
-                            color: #000000;
-                            font-size: 0.5em;
-                        "
-                        class="fas fa-save"
-                    ></i>
-                </button>
-
-                <button id="shareWhiteboardBtn" title="share whiteboard" type="button">
-                    <i class="fas fa-share-square"></i>
-                </button>
-
-                <button id="displayWhiteboardInfoBtn" title="Show whiteboard info" type="button">
-                    <i class="fas fa-info-circle"></i>
-                </button>
             </div>
 
             <div class="btn-group minGroup">
                 <button
                     style="width: 100%; padding: 11px 11px"
                     id="minMaxBtn"
-                    title="hide buttons"
+                    title="Toggle button bar"
                     type="button"
                 >
                     <i
@@ -287,38 +259,6 @@
                         class="fas fa-angle-right"
                     ></i>
                 </button>
-            </div>
-        </div>
-
-        <div id="whiteboardInfoContainer">
-            <p><b>Whiteboard information:</b></p>
-            <p># connected users: <i id="connectedUsersCount">0</i></p>
-            <p>Smallest screen resolution: <i id="smallestScreenResolution">Unknown.</i></p>
-            <p># msg. sent to server: <i id="messageSentCount">0</i></p>
-            <p># msg. received from server: <i id="messageReceivedCount">0</i></p>
-        </div>
-
-        <div id="shareWhiteboardDialog" class="displayNone">
-            <div class="shareWhiteboardDialogContent">
-                <button
-                    class="shareWhiteboardDialogItem"
-                    id="shareWhiteboardDialogCopyReadOnlyLink"
-                >
-                    <i class="fa fa-lock"></i>&nbsp;Share read-only link
-                </button>
-                <button
-                    class="shareWhiteboardDialogItem displayNone"
-                    id="shareWhiteboardDialogCopyReadWriteLink"
-                >
-                    <i class="fa fa-lock-open"></i>&nbsp;Share read/write link
-                </button>
-                <button class="shareWhiteboardDialogItem" id="shareWhiteboardDialogGoBack">
-                    <b>Go back to the whiteboard</b>
-                </button>
-                <p
-                    class="shareWhiteboardDialogItem displayNone"
-                    id="shareWhiteboardDialogMessage"
-                ></p>
             </div>
         </div>
     </body>

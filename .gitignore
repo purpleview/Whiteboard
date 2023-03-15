@@ -73,3 +73,6 @@ typings/
 
 # pnpm
 pnpm-lock.yaml
+
+# PyCharm
+/.idea

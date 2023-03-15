@@ -132,7 +132,7 @@ function showBasicAlert(html, newOptions) {
             '<div style="width: 30%; margin: auto; background: #aaaaaa; border-radius: 5px; font-size: 1.2em; border: 1px solid gray;">' +
             '<div style="border-bottom: 1px solid #676767; background: ' +
             options["headercolor"] +
-            '; padding-left: 5px; font-size: 1em;">' +
+            '; padding: 8px 5px 5px 8px; font-size: 1em;">' +
             options["header"] +
             '<div style="float: right; margin-right: 4px; color: #373737; cursor: pointer;" class="closeAlert">x</div></div>' +
             '<div style="padding: 10px;" class="htmlcontent"></div>' +
@@ -693,8 +693,13 @@ function initWhiteboard() {
                                     var currentDataUrl = null;
                                     var modalDiv = $(
                                         "<div>" +
-                                            "Page: <select></select> " +
-                                            '<button style="margin-bottom: 3px;" class="modalBtn"><i class="fas fa-upload"></i> Upload to Whiteboard</button>' +
+                                            (lang === "de" ? "Seite" : "Page") +
+                                            ": <select></select> " +
+                                            '<button style="margin-bottom: 11px;" class="modalBtn"><i class="fas fa-upload"></i> ' +
+                                            (lang === "de"
+                                                ? "Hochladen ins Whiteboard"
+                                                : "Upload to whiteboard") +
+                                            "</button>" +
                                             '<img style="width:100%;" src=""/>' +
                                             "</div>"
                                     );
@@ -720,8 +725,8 @@ function initWhiteboard() {
                                     }
 
                                     showBasicAlert(modalDiv, {
-                                        header: "Pdf to Image",
-                                        okBtnText: "cancel",
+                                        header: lang === "de" ? "PDF zu Bild" : "PDF to image",
+                                        okBtnText: lang === "de" ? "Abbrechen" : "Cancel",
                                         headercolor: "#0082c9",
                                     });
 
@@ -762,7 +767,9 @@ function initWhiteboard() {
                                     // PDF loading error
 
                                     showBasicAlert(
-                                        "Error loading pdf as image! Check that this is a vaild pdf file!"
+                                        lang === "de"
+                                            ? "Fehler beim Laden des PDFs als Bild! Prüfen Sie, ob es eine gültige Datei ist!"
+                                            : "Error loading pdf as image! Check that it's a valid file!"
                                     );
                                     console.error(reason);
                                 }
@@ -770,7 +777,11 @@ function initWhiteboard() {
                         };
                         reader.readAsArrayBuffer(blob);
                     } else {
-                        showBasicAlert("File must be an image!");
+                        showBasicAlert(
+                            lang === "de"
+                                ? "Die Datei muss ein Bild oder PDF sein!"
+                                : "File must be an image or PDF!"
+                        );
                     }
                 } else {
                     //File from other browser
@@ -797,7 +808,11 @@ function initWhiteboard() {
                                         uploadImgAndAddToWhiteboard(url); //Last option maybe its base64
                                     }
                                 } else {
-                                    showBasicAlert("Can only upload Imagedata!");
+                                    showBasicAlert(
+                                        lang === "de"
+                                            ? "Keine gültigen Bilddaten!"
+                                            : "Can only upload Imagedata!"
+                                    );
                                 }
                             });
                         }

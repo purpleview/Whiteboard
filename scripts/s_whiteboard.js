@@ -5,6 +5,7 @@ const { getSafeFilePath } = require("./utils");
 const FILE_DATABASE_FOLDER = "savedBoards";
 
 var savedBoards = {};
+var savedTimestamps = {};
 var savedUndos = {};
 var saveDelay = {};
 
@@ -35,6 +36,7 @@ module.exports = {
             //Clear the whiteboard
             delete savedBoards[wid];
             delete savedUndos[wid];
+            delete savedTimestamps[wid];
             // delete the corresponding file too
             fs.unlink(fileDatabasePath(wid), function (err) {
                 if (err) {
@@ -147,11 +149,21 @@ module.exports = {
     },
     // Load saved whiteboard
     loadStoredData: function (wid) {
+        const now = new Date();
+        for (let key in savedTimestamps) {
+            if (now - savedTimestamps[key] > 1000 * 60 * 60 * 12) {
+                delete savedBoards[key];
+                delete savedUndos[key];
+                delete savedTimestamps[key];
+            }
+        }
+
         if (wid in savedBoards) {
             return savedBoards[wid];
         }
 
         savedBoards[wid] = [];
+        savedTimestamps[wid] = now;
 
         // try to load from DB
         if (config.backend.enableFileDatabase) {

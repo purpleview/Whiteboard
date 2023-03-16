@@ -9,7 +9,6 @@ import "./icons";
 import main from "./main";
 
 $(document).ready(function () {
-    // Set correct width height on mobile browsers
     $("head").append(
         '<meta name="viewport" content="width=device-width, initial-scale=0.52, maximum-scale=1" />'
     );

@@ -1,26 +1,55 @@
 # This workflow will do clean build of the docker image
 
-name: Docker Image CI (also tests build)
+name: Build and publish Whiteboard
 
 on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+  create:
+    paths:
+      - "**"
+      - ".github/workflows/build_docker.yml"
+    tags:
+      - v*
+
+env:
+  IMAGE_NAME: purpleview-whiteboard
 
 jobs:
-  build:
+  push:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Build image
+        run: docker build . --file Dockerfile --tag image
 
-      - name: build the image
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password=stdin
+
+      - name: Push image
         run: |
-          docker buildx build \
-          --file Dockerfile \
-          --tag purpleview/whiteboard:$(date +%s) \
-          --platform linux/amd64,linux/arm64 .
+          IMAGE_ID=docker.pkg.github.com/purpleview/whiteboard/$IMAGE_NAME
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag image $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }} (Revision ${{ github.run_number }})
+          draft: false
+          prerelease: false
+
+      - name: Save tag name to env
+        run: echo "TAG=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV

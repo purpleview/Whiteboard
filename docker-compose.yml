@@ -2,7 +2,7 @@ version: "3.1"
 services:
   whiteboard:
     image: docker.pkg.github.com/purpleview/whiteboard/purpleview-whiteboard:latest
-    restart: always
+    restart: on-failure
     ports:
       - "8080:8080/tcp"
     command: --config=./config.default.yml

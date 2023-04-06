@@ -8,5 +8,4 @@ services:
     command: --config=./config.default.yml
     volumes:
       - ./data/uploads:/opt/app/public/uploads"
-      - ./data/config.yml:/opt/app/config.default.yml:ro
       - ./data/savedBoards:/opt/app/savedBoards"

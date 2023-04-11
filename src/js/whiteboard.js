@@ -1047,8 +1047,12 @@ const whiteboard = {
                 "em; color:" +
                 textcolor +
                 '; min-width:50px; min-height:100%;"></div>' +
-                '<div title="remove textbox" class="removeIcon" style="position:absolute; cursor:pointer; top:-3px; right:2px;"><b>🗑</b></div>' +
-                '<div title="move textbox" class="moveIcon" style="position:absolute; cursor:move; top:1px; left:2px; font-size: 0.5em;"><i class="fas fa-expand-arrows-alt"></i></div>' +
+                '<div title="' +
+                (_this.lang === "de" ? "Textfeld entfernen" : "Remove Textbox") +
+                '" class="removeIcon" style="position:absolute; cursor:pointer; top:-3px; right:2px;"><b>🗑</b></div>' +
+                '<div title="' +
+                (_this.lang === "de" ? "Textfeld verschieben" : "Move Textbox") +
+                '" class="moveIcon" style="position:absolute; cursor:move; top:1px; left:2px; font-size: 0.5em;"><i class="fas fa-expand-arrows-alt"></i></div>' +
                 "</div>"
         );
         _this.latestActiveTextBoxId = txId;

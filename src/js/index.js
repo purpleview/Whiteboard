@@ -8,13 +8,7 @@ import "../css/main.css";
 import "./icons";
 import main from "./main";
 
-$(document).ready(function () {
-    $("head").append(
-        '<meta name="viewport" content="width=device-width, initial-scale=0.52, maximum-scale=1" />'
-    );
-
-    main();
-});
+$(document).ready(main);
 
 if (module.hot) {
     module.hot.accept();

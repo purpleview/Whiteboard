@@ -646,8 +646,10 @@ function initWhiteboard() {
             if (ReadOnlyService.readOnlyActive) return;
             e.preventDefault();
             e.stopPropagation();
-            dragCounter++;
-            whiteboard.dropIndicator.show();
+            if (e.originalEvent.dataTransfer.files.length) {
+                dragCounter++;
+                whiteboard.dropIndicator.show();
+            }
         });
 
         $("#whiteboardContainer").on("dragleave", function (e) {
@@ -655,9 +657,11 @@ function initWhiteboard() {
 
             e.preventDefault();
             e.stopPropagation();
-            dragCounter--;
-            if (dragCounter === 0) {
-                whiteboard.dropIndicator.hide();
+            if (e.originalEvent.dataTransfer.files.length) {
+                dragCounter--;
+                if (dragCounter === 0) {
+                    whiteboard.dropIndicator.hide();
+                }
             }
         });
 
@@ -779,8 +783,8 @@ function initWhiteboard() {
                     } else {
                         showBasicAlert(
                             lang === "de"
-                                ? "Die Datei muss ein Bild oder PDF sein!"
-                                : "File must be an image or PDF!"
+                                ? "Einfügen nicht möglich.<br/>Keine gültige Datei ausgewählt!"
+                                : "Unable to insert.<br/>Selected file is not valid!"
                         );
                     }
                 } else {
@@ -810,8 +814,8 @@ function initWhiteboard() {
                                 } else {
                                     showBasicAlert(
                                         lang === "de"
-                                            ? "Keine gültigen Bilddaten!"
-                                            : "Can only upload Imagedata!"
+                                            ? "Einfügen nicht möglich.<br/>Keine gültigen Bilddaten!"
+                                            : "Unable to insert.<br/>No valid image data!"
                                     );
                                 }
                             });
@@ -825,7 +829,9 @@ function initWhiteboard() {
             //Handle drop
             if (ReadOnlyService.readOnlyActive) return;
 
-            handleFileUploadEvent(e);
+            if (e.originalEvent.dataTransfer.files.length) {
+                handleFileUploadEvent(e);
+            }
             dragCounter = 0;
             whiteboard.dropIndicator.hide();
         });

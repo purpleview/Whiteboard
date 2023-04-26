@@ -38,6 +38,8 @@ const myUsername = urlParams.get("username") || "unknown" + (Math.random() + "")
 const accessToken = urlParams.get("accesstoken") || "";
 const copyfromwid = urlParams.get("copyfromwid") || "";
 
+let isAgentInConversation = false;
+
 // Custom Html Title
 const title = urlParams.get("title");
 if (title) {
@@ -386,19 +388,28 @@ function initWhiteboard() {
                         drawBackgroundGrid: ConfigService.drawBackgroundGrid,
                     },
                     function (imgData) {
-                        var w = window.open("about:blank"); //Firefox will not allow downloads without extra window
-                        setTimeout(function () {
-                            //FireFox seems to require a setTimeout for this to work.
-                            var a = document.createElement("a");
-                            a.href = imgData;
-                            a.download = "whiteboard." + ConfigService.imageDownloadFormat;
-                            w.document.body.appendChild(a);
-                            a.click();
-                            w.document.body.removeChild(a);
+                        if (isAgentInConversation) {
+                            const message = JSON.stringify({
+                                sender: "whiteboard",
+                                image: imgData,
+                            });
+                            window.parent.postMessage(message, "*");
+                        } else {
+                            var w = window.open("about:blank"); //Firefox will not allow downloads without extra window
                             setTimeout(function () {
-                                w.close();
-                            }, 100);
-                        }, 0);
+                                // FireFox seems to require a setTimeout for this to work.
+                                var a = document.createElement("a");
+                                a.href = imgData;
+                                a.download = "whiteboard." + ConfigService.imageDownloadFormat;
+                                w.document.body.appendChild(a);
+                                a.click();
+                                w.document.body.removeChild(a);
+
+                                setTimeout(function () {
+                                    w.close();
+                                }, 100);
+                            }, 0);
+                        }
                     }
                 );
             });
@@ -998,6 +1009,23 @@ function initWhiteboard() {
         },
         false
     );
+
+    function checkJsonString(string) {
+        try {
+            var data = JSON.parse(string);
+            if (data.sender == "whiteboardModule") return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    window.addEventListener("message", function (e) {
+        if (checkJsonString(e.data)) {
+            const data = e.data;
+            const decoded = JSON.parse(data);
+            isAgentInConversation = decoded.isAgentInConversation;
+        }
+    });
 
     function uploadImgAndAddToWhiteboard(base64data) {
         const date = +new Date();

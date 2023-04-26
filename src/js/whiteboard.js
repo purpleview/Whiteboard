@@ -241,6 +241,9 @@ const whiteboard = {
 
                 _this.viewCoords.x -= xDif;
                 _this.viewCoords.y -= yDif;
+                _this.backgroundGrid.css({
+                    backgroundPosition: _this.viewCoords.x + "px " + _this.viewCoords.y + "px",
+                });
 
                 _this.startCoords.x = currentPos.x;
                 _this.startCoords.y = currentPos.y;

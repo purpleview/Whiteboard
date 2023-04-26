@@ -863,6 +863,13 @@ function initWhiteboard() {
         }
 
         let colorPickerOnOpen = function (current_color) {
+            const screenWidth = $("body").width();
+            const pickerElem = $(".picker_wrapper");
+            const pickerRight = pickerElem.offset().left + pickerElem.width();
+            const pickerLeft = pickerRight > screenWidth;
+            pickerElem.removeClass(pickerLeft ? "popup_right" : "popup_left");
+            pickerElem.addClass(pickerLeft ? "popup_left" : "popup_right");
+
             this._domPalette = $(".picker_palette", this.domElement);
             const palette = JSON.parse(localStorage.getItem("savedColors"));
             if ($(".picker_splotch", this._domPalette).length === 0) {

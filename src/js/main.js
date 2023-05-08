@@ -67,7 +67,7 @@ if (lang === "de") {
     $("#whiteboardStickyBtn").attr("title", "Haftnotiz");
     $("#textboxBackgroundColorPickerBtn").attr("title", "Hintergrundfarbe");
     $("#addImgToCanvasBtn").attr("title", "Bild einfügen");
-    $("#saveAsImageBtn").attr("title", "Whiteboard als Bild speichern");
+    $("#saveAsImageBtn").attr("title", "Snapshot erstellen");
     $("#minMaxBtn").attr("title", "Buttonleiste ein-/ausblenden");
 }
 

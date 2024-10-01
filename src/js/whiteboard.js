@@ -531,6 +531,14 @@ const whiteboard = {
         }
 
         let currentPos = Point.fromEvent(e);
+        if (
+            currentPos.x < 0 ||
+            currentPos.y < 0 ||
+            currentPos.x >= $(window).width() ||
+            currentPos.y >= $(window).height()
+        ) {
+            return;
+        }
 
         window.requestAnimationFrame(function () {
             // update position

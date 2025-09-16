@@ -55,6 +55,8 @@ class InfoService {
         return this.#refreshInfoIntervalId;
     }
 
+    #displayInfoTime = new Date();
+
     /**
      * @param {number} nbConnectedUsers
      * @param {{w: number, h: number}} smallestScreenResolution
@@ -79,16 +81,19 @@ class InfoService {
     }
 
     refreshDisplayedInfo() {
+        const now = new Date();
+        if (now - this.displayInfoTime < 10000) return;
+        this.displayInfoTime = now;
         const {
             nbMessagesReceived,
             nbMessagesSent,
             nbConnectedUsers,
             smallestScreenResolution: ssr,
         } = this;
-        $("#messageReceivedCount")[0].innerText = String(nbMessagesReceived);
-        $("#messageSentCount")[0].innerText = String(nbMessagesSent);
-        $("#connectedUsersCount")[0].innerText = String(nbConnectedUsers);
-        $("#smallestScreenResolution")[0].innerText = ssr ? `(${ssr.w}, ${ssr.h})` : "Unknown";
+        console.log(
+            `Info: messageReceived=${nbMessagesReceived}, messageSent=${nbMessagesSent}, connectedUsers=${nbConnectedUsers}, smallestScreenResolution=` +
+                (ssr ? `(${ssr.w}, ${ssr.h})` : "Unknown")
+        );
     }
 
     /**

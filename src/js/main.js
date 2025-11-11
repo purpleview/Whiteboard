@@ -39,6 +39,7 @@ const accessToken = urlParams.get("accesstoken") || "";
 const copyfromwid = urlParams.get("copyfromwid") || "";
 
 let isAgentInConversation = false;
+let customerUse = "";
 
 // Custom Html Title
 const title = urlParams.get("title");
@@ -50,6 +51,8 @@ const lang = urlParams.get("lang") || "de";
 if (lang === "de") {
     $("#whiteboardLockBtn").attr("title", "Whiteboard bearbeiten");
     $("#whiteboardUnlockBtn").attr("title", "Whiteboard sperren");
+    $("#showToolbarBtn").attr("title", "Werkzeugleiste für Kunden einblenden");
+    $("#hideToolbarBtn").attr("title", "Werkzeugleiste für Kunden ausblenden");
     $("#whiteboardTrashBtn").attr("title", "Whiteboard leeren");
     $("#whiteboardTrashBtnConfirm").attr("title", "Leeren bestätigen...");
     $("#whiteboardUndoBtn").attr("title", "Rückgängig machen");
@@ -100,6 +103,13 @@ function main() {
             whiteboard.refreshUserBadges();
         });
 
+        signaling_socket.on("toggleToolbar", function (value) {
+            if(value)
+                ReadOnlyService.deactivateReadOnlyMode();
+            else
+                ReadOnlyService.activateReadOnlyMode(true);
+        })
+
         let accessDenied = false;
         signaling_socket.on("wrongAccessToken", function () {
             if (!accessDenied) {
@@ -112,6 +122,15 @@ function main() {
             wid: whiteboardId,
             at: accessToken,
             windowWidthHeight: { w: $(window).width(), h: $(window).height() },
+        });
+
+        signaling_socket.on("userJoined", function () {
+            if(isAgentInConversation && customerUse === "Unrestricted") {
+                signaling_socket.emit("toggleToolbar", {
+                    at: accessToken,
+                    value: true,
+                });
+            }
         });
     });
 }
@@ -172,7 +191,7 @@ function showBasicAlert(html, newOptions) {
 function initWhiteboard() {
     $(document).ready(function () {
         // by default set in readOnly mode
-        ReadOnlyService.activateReadOnlyMode();
+        ReadOnlyService.activateReadOnlyMode(true);
 
         if (urlParams.get("webdav") === "true") {
             $("#uploadWebDavBtn").show();
@@ -328,6 +347,31 @@ function initWhiteboard() {
             });
         $("#whiteboardUnlockBtn").hide();
         $("#whiteboardLockBtn").show();
+
+        // toolbar
+        $("#hideToolbarBtn")
+            .off("click")
+            .click(() => {
+                $("#hideToolbarBtn").hide();
+                $("#showToolbarBtn").show();
+                signaling_socket.emit("toggleToolbar", {
+                    at: accessToken,
+                    value: false,
+                });
+
+            });
+        $("#showToolbarBtn")
+            .off("click")
+            .click(() => {
+                $("#hideToolbarBtn").show();
+                $("#showToolbarBtn").hide();
+                signaling_socket.emit("toggleToolbar", {
+                    at: accessToken,
+                    value: true,
+                });
+            });
+        $("#hideToolbarBtn").hide();
+        $("#showToolbarBtn").hide();
 
         // switch tool
         $(".whiteboard-tool")
@@ -978,8 +1022,10 @@ function initWhiteboard() {
         whiteboard.refreshCursorAppearance();
 
         if (process.env.NODE_ENV === "production") {
-            if (ConfigService.readOnlyOnWhiteboardLoad) ReadOnlyService.activateReadOnlyMode();
-            else ReadOnlyService.deactivateReadOnlyMode();
+            if (ConfigService.readOnlyOnWhiteboardLoad)
+                ReadOnlyService.activateReadOnlyMode();
+            else
+                window.parent.postMessage("whiteboardService ready", "*");
 
             if (ConfigService.displayInfoOnWhiteboardLoad) InfoService.displayInfo();
             else InfoService.hideInfo();
@@ -1027,6 +1073,13 @@ function initWhiteboard() {
             const data = e.data;
             const decoded = JSON.parse(data);
             isAgentInConversation = decoded.isAgentInConversation;
+            let isAgent = decoded.isAgent;
+            customerUse = decoded.customerUse;
+            if(isAgent) {
+                ReadOnlyService.deactivateReadOnlyMode();
+                if(isAgentInConversation && customerUse === "Set by agent")
+                    $("#showToolbarBtn").show();
+            }
         }
     });
 

@@ -23,7 +23,7 @@ class ReadOnlyService {
     /**
      * Activate read-only mode
      */
-    activateReadOnlyMode() {
+    activateReadOnlyMode(hideToolBar) {
         this.#readOnlyActive = true;
 
         this.#previousToolHtmlElem = $(".whiteboard-tool.active");
@@ -36,6 +36,8 @@ class ReadOnlyService {
         $(".whiteboard-edit-group").addClass("group-disabled");
         $("#whiteboardUnlockBtn").hide();
         $("#whiteboardLockBtn").show();
+        if(hideToolBar)
+            $("#toolbar").hide();
     }
 
     /**
@@ -51,6 +53,7 @@ class ReadOnlyService {
         $(".whiteboard-edit-group").removeClass("group-disabled");
         $("#whiteboardUnlockBtn").show();
         $("#whiteboardLockBtn").hide();
+        $("#toolbar").show();
 
         // restore previously selected tool
         const { previousToolHtmlElem } = this;

@@ -121,8 +121,6 @@ class ConfigService {
         this.#isReadOnly = isReadOnly;
 
         console.log("Whiteboard config from server:", configFromServer, "parsed:", this);
-
-        window.parent.postMessage("whiteboardService ready", "*");
     }
 
     /**

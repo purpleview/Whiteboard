@@ -361,6 +361,7 @@ function startBackendServer(port) {
                 socket.join(whiteboardId); //Joins room name=wid
                 const screenResolution = content["windowWidthHeight"];
                 WhiteboardInfoBackendService.join(socket.id, whiteboardId, screenResolution);
+                socket.broadcast.emit("userJoined");
             } else {
                 socket.emit("wrongAccessToken", true);
             }
@@ -375,6 +376,14 @@ function startBackendServer(port) {
                     whiteboardId,
                     screenResolution
                 );
+            }
+        });
+
+        socket.on("toggleToolbar", function (content) {
+            content = escapeAllContentStrings(content);
+            if (accessToken === "" || accessToken == content["at"]) {
+                const value = content["value"];
+                socket.broadcast.emit("toggleToolbar", value);
             }
         });
     });

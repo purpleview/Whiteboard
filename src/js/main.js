@@ -104,11 +104,9 @@ function main() {
         });
 
         signaling_socket.on("toggleToolbar", function (value) {
-            if(value)
-                ReadOnlyService.deactivateReadOnlyMode();
-            else
-                ReadOnlyService.activateReadOnlyMode(true);
-        })
+            if (value) ReadOnlyService.deactivateReadOnlyMode();
+            else ReadOnlyService.activateReadOnlyMode(true);
+        });
 
         let accessDenied = false;
         signaling_socket.on("wrongAccessToken", function () {
@@ -125,7 +123,7 @@ function main() {
         });
 
         signaling_socket.on("userJoined", function () {
-            if(isAgentInConversation && customerUse === "Unrestricted") {
+            if (isAgentInConversation && customerUse === "Unrestricted") {
                 signaling_socket.emit("toggleToolbar", {
                     at: accessToken,
                     value: true,
@@ -358,7 +356,6 @@ function initWhiteboard() {
                     at: accessToken,
                     value: false,
                 });
-
             });
         $("#showToolbarBtn")
             .off("click")
@@ -1022,10 +1019,8 @@ function initWhiteboard() {
         whiteboard.refreshCursorAppearance();
 
         if (process.env.NODE_ENV === "production") {
-            if (ConfigService.readOnlyOnWhiteboardLoad)
-                ReadOnlyService.activateReadOnlyMode();
-            else
-                window.parent.postMessage("whiteboardService ready", "*");
+            if (ConfigService.readOnlyOnWhiteboardLoad) ReadOnlyService.activateReadOnlyMode();
+            else window.parent.postMessage("whiteboardService ready", "*");
 
             if (ConfigService.displayInfoOnWhiteboardLoad) InfoService.displayInfo();
             else InfoService.hideInfo();
@@ -1075,9 +1070,9 @@ function initWhiteboard() {
             isAgentInConversation = decoded.isAgentInConversation;
             let isAgent = decoded.isAgent;
             customerUse = decoded.customerUse;
-            if(isAgent) {
+            if (isAgent) {
                 ReadOnlyService.deactivateReadOnlyMode();
-                if(isAgentInConversation && customerUse === "Set by agent")
+                if (isAgentInConversation && customerUse === "Set by agent")
                     $("#showToolbarBtn").show();
             }
         }

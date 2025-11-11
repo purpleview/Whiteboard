@@ -36,8 +36,7 @@ class ReadOnlyService {
         $(".whiteboard-edit-group").addClass("group-disabled");
         $("#whiteboardUnlockBtn").hide();
         $("#whiteboardLockBtn").show();
-        if(hideToolBar)
-            $("#toolbar").hide();
+        if (hideToolBar) $("#toolbar").hide();
     }
 
     /**

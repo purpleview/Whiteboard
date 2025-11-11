@@ -62,7 +62,7 @@ library.add(
     faStickyNote,
     faHandPaper,
     faEye,
-    faEyeSlash,
+    faEyeSlash
 );
 
 dom.i2svg();

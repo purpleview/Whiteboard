@@ -3,6 +3,8 @@ FROM node:18 AS base
 # Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
+RUN mkdir -p /home/appuser && chown -R appuser:appuser /home/appuser
+
 # Create app directory and set ownership
 RUN mkdir -p /opt/app && chown -R appuser:appuser /opt/app
 WORKDIR /opt/app

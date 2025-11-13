@@ -35,6 +35,8 @@ LABEL maintainer="cracker0dks"
 RUN addgroup -g 1001 -S appuser && \
     adduser -S -D -H -u 1001 -s /sbin/nologin -G appuser appuser
 
+RUN mkdir -p /home/appuser && chown -R appuser:appuser /home/appuser
+
 # Create app directory and set ownership
 RUN mkdir -p /opt/app && chown -R appuser:appuser /opt/app
 WORKDIR /opt/app

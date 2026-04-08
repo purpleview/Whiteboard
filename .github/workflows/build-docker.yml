@@ -65,5 +65,10 @@ jobs:
           format: cyclonedx-json
           output-file: cyclonedx-bom-${{ env.VERSION }}.json
 
+      - uses: shogo82148/actions-upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ steps.extract-sbom-json.outputs.destination }}/*.cyclonedx.json
+
       - name: Save tag name to env
         run: echo "TAG=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV

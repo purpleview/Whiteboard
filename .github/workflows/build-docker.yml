@@ -51,6 +51,12 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Generate SBOM (CycloneDX JSON) from Docker image
         uses: anchore/sbom-action@v0
         id: extract-sbom-json

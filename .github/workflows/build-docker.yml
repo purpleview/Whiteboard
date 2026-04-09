@@ -3,12 +3,18 @@
 name: Build and publish Whiteboard
 
 on:
-  create:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
     paths:
       - "**"
-      - ".github/workflows/build_docker.yml"
+    # Publish `v1.2.3` tags as releases.
     tags:
       - v*
+
+  # Run tests for any PRs.
+  pull_request:
 
 env:
   IMAGE_NAME: purpleview-whiteboard
@@ -16,9 +22,10 @@ env:
 jobs:
   push:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build image
         run: |
@@ -28,7 +35,7 @@ jobs:
           [ "$VERSION" == "master" ] && VERSION=latest
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
-          docker build . --file Dockerfile --tag image
+          docker build . --build-arg DOCKER_TAG=$VERSION --tag image
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin

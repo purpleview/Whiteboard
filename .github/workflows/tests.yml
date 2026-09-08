@@ -87,7 +87,7 @@ jobs:
           git commit -m 'chore: Coverage-Badge auf ${{ steps.coverage.outputs.percent }} % aktualisieren [skip ci]'
           # Zwischenzeitliche Pushes auf master nicht ueberschreiben
           git pull --rebase origin master
-          git push origin HEAD:master
+          git push origin HEAD:refs/heads/master
 
       # ------------------------------------------------------------------
       # Coverage-Stempel fuer den Monatsbericht: fuer jede abdeckbare Zeile

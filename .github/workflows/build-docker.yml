@@ -59,8 +59,12 @@ jobs:
           docker tag image $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
+      # Releases nur fuer Versions-Tags. Ein Push auf master lief frueher ebenfalls
+      # hier durch und legte ein Release samt Tag "master" an - der Branch war
+      # danach als Refspec mehrdeutig ("dst refspec master matches more than one").
       - name: Create Release
         id: create_release
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -71,12 +75,14 @@ jobs:
           prerelease: false
 
       - name: Get release
+        if: startsWith(github.ref, 'refs/tags/v')
         id: get_release
         uses: bruceadams/get-release@v1.3.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Generate SBOM (CycloneDX JSON) from Docker image
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: anchore/sbom-action@v0
         id: extract-sbom-json
         with:
@@ -85,4 +91,5 @@ jobs:
           output-file: cyclonedx-bom-${{ env.VERSION }}.json
 
       - name: Save tag name to env
+        if: startsWith(github.ref, 'refs/tags/v')
         run: echo "TAG=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV

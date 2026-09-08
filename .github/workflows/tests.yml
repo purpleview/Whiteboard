@@ -22,6 +22,10 @@ jobs:
     name: Jest-Tests mit Coverage
     runs-on: ubuntu-latest
 
+    env:
+      # Secrets sind in step.if nicht verfuegbar, ueber env schon (maskiert).
+      DEVELOPMENT_READ_TOKEN: ${{ secrets.DEVELOPMENT_READ_TOKEN }}
+
     steps:
       - uses: actions/checkout@v7
         with:
@@ -88,26 +92,47 @@ jobs:
       # ------------------------------------------------------------------
       # Coverage-Stempel fuer den Monatsbericht: fuer jede abdeckbare Zeile
       # der Monat ihrer letzten Aenderung. Das Skript dahinter liegt einmal
-      # im Repository development und wird von allen Projekten ueber diese
-      # Actions aufgerufen; metrics/ dort sammelt die Stempel ein und macht
-      # daraus den Monatsbericht. Hintergrund:
+      # im Repository development; metrics/ dort sammelt die Stempel ein und
+      # macht daraus den Monatsbericht. Hintergrund:
       # doc/sonarqube-analyse-im-eigenen-netz.md im Repository Empathy.
+      #
+      # Dieses Repository ist oeffentlich, und GitHub laesst oeffentliche
+      # Repositories keine Actions aus einem privaten Repository verwenden
+      # ("Unable to resolve action purpleview/development"). Deshalb wird
+      # development hier mit einem Token ausgecheckt und die Action lokal
+      # aufgerufen. Das Token liegt im Secret DEVELOPMENT_READ_TOKEN
+      # (fein granulierter PAT, Lesezugriff auf Contents von development);
+      # fehlt es, werden die Stempel-Schritte uebersprungen und der Lauf
+      # bleibt gruen.
       #
       # Nur auf master, und nur nach gruenen Tests: der Testschritt bricht den
       # Job sonst vorher ab. Eine rote Suite misst weniger Code und wuerde
       # die Kurve nach unten verfaelschen.
       # ------------------------------------------------------------------
+      - name: Repository development auschecken (Coverage-Werkzeuge)
+        id: development
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && env.DEVELOPMENT_READ_TOKEN != ''
+        uses: actions/checkout@v7
+        with:
+          repository: purpleview/development
+          token: ${{ secrets.DEVELOPMENT_READ_TOKEN }}
+          path: .development
+
       - name: Coverage-Stempel erzeugen
         id: coverage_stamp
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        uses: purpleview/development/.github/actions/coverage-stamp@main
+        if: steps.development.outcome == 'success'
+        uses: ./.development/.github/actions/coverage-stamp
         with:
           report-path: coverage/cobertura-coverage.xml
 
       - name: Stempel in den metrics-Branch schreiben
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        uses: purpleview/development/.github/actions/publish-coverage-stamp@main
+        if: steps.development.outcome == 'success'
+        uses: ./.development/.github/actions/publish-coverage-stamp
         with:
           stamp: ${{ steps.coverage_stamp.outputs.stamp }}
           stamp-line: ${{ steps.coverage_stamp.outputs.stamp-line }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Hinweis, wenn kein Stempel geschrieben wurde
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.development.outcome != 'success'
+        run: echo '::warning::Kein Coverage-Stempel - Secret DEVELOPMENT_READ_TOKEN fehlt (siehe Kommentar in tests.yml).'

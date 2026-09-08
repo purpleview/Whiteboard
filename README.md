@@ -1,7 +1,7 @@
 # whiteboard
 
 [![Tests](https://github.com/purpleview/Whiteboard/actions/workflows/tests.yml/badge.svg)](https://github.com/purpleview/Whiteboard/actions/workflows/tests.yml)
-[![Coverage](https://img.shields.io/badge/Coverage-pending-lightgrey)](https://github.com/purpleview/Whiteboard/actions/workflows/tests.yml)
+[![Coverage](https://img.shields.io/badge/Coverage-7.2%25-red)](https://github.com/purpleview/Whiteboard/actions/workflows/tests.yml)
 
 This is a lightweight NodeJS collaborative Whiteboard/Sketchboard which can easily be customized...
 

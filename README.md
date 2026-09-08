@@ -1,5 +1,8 @@
 # whiteboard
 
+[![Tests](https://github.com/purpleview/Whiteboard/actions/workflows/tests.yml/badge.svg)](https://github.com/purpleview/Whiteboard/actions/workflows/tests.yml)
+[![Coverage](https://img.shields.io/badge/Coverage-pending-lightgrey)](https://github.com/purpleview/Whiteboard/actions/workflows/tests.yml)
+
 This is a lightweight NodeJS collaborative Whiteboard/Sketchboard which can easily be customized...
 
 ![start](./doc/start.png)
@@ -217,3 +220,14 @@ Note: You might have to serve the app with https (If your nextcloud server runs 
 Upload both icons present at /doc/nextcloud_icons/ to your nextcloud at the "external sites" admin section. Then set it as symbol on your link.
 
 **_ MIT License _**
+
+## Tests
+
+Jest tests live next to the code as `*.test.js`. `jest.config.js` switches coverage on for the whole application code (`scripts/`, `src/js/`), so the ratio also counts untested modules:
+
+```
+npm ci
+npm test
+```
+
+The same suite runs in CI (`.github/workflows/tests.yml`) on every push and pull request; on `master` it updates the coverage badge above and publishes the coverage stamp to the `metrics` branch.

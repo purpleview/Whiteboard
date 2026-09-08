@@ -1,0 +1,113 @@
+name: Tests
+
+# Laeuft bei jedem Push auf einen Branch und bei jedem Pull Request und
+# ist per workflow_call aus build-docker.yml aufrufbar. Ersetzt den frueheren
+# Workflow "Linting and testing code CI".
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: write # fuer den Badge-Commit und den Coverage-Stempel auf master
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Jest-Tests mit Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Der Coverage-Stempel braucht die Git-Historie fuer git blame. Ein
+          # flacher Klon schriebe sonst jede Zeile dem Checkout-Commit zu.
+          fetch-depth: 0
+
+      - name: Node einrichten
+        uses: actions/setup-node@v6
+        with:
+          node-version: "18" # wie im Dockerfile
+          cache: npm
+
+      - name: Abhaengigkeiten installieren
+        run: npm ci
+
+      - name: Code-Style (prettier)
+        run: npm run style
+
+      # jest.config.js schaltet Coverage ein und schreibt coverage/ mit
+      # cobertura-coverage.xml (Stempel) und coverage-summary.json (Badge).
+      - name: Tests mit Coverage
+        run: npm test
+
+      - name: Coverage-Report
+        id: coverage
+        run: |
+          percent=$(node -e "console.log(require('./coverage/coverage-summary.json').total.lines.pct.toFixed(1))")
+          echo "percent=$percent" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Coverage: ${percent} % (Zeilen)"
+            echo
+            echo '```'
+            node -e "const t=require('./coverage/coverage-summary.json').total; for (const k of ['lines','statements','branches','functions']) console.log(k.padEnd(11), t[k].covered+'/'+t[k].total, t[k].pct+' %')"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Coverage-Report als Artefakt
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ github.run_id }}
+          path: coverage/coverage-summary.json
+          retention-days: 14
+
+      # Badge nur auf master fortschreiben. Bei Pull Requests und
+      # Feature-Branches waere ein Commit unerwuenscht, beim Aufruf aus
+      # build-docker.yml zeigt github.ref auf den Tag - beides faellt hier raus.
+      - name: Coverage-Badge in der README aktualisieren
+        id: badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: python3 .github/scripts/update_badge.py coverage --percent ${{ steps.coverage.outputs.percent }}
+
+      - name: Badge committen
+        if: steps.badge.outputs.changed == 'true'
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git commit -m 'chore: Coverage-Badge auf ${{ steps.coverage.outputs.percent }} % aktualisieren [skip ci]'
+          # Zwischenzeitliche Pushes auf master nicht ueberschreiben
+          git pull --rebase origin master
+          git push origin HEAD:master
+
+      # ------------------------------------------------------------------
+      # Coverage-Stempel fuer den Monatsbericht: fuer jede abdeckbare Zeile
+      # der Monat ihrer letzten Aenderung. Das Skript dahinter liegt einmal
+      # im Repository development und wird von allen Projekten ueber diese
+      # Actions aufgerufen; metrics/ dort sammelt die Stempel ein und macht
+      # daraus den Monatsbericht. Hintergrund:
+      # doc/sonarqube-analyse-im-eigenen-netz.md im Repository Empathy.
+      #
+      # Nur auf master, und nur nach gruenen Tests: der Testschritt bricht den
+      # Job sonst vorher ab. Eine rote Suite misst weniger Code und wuerde
+      # die Kurve nach unten verfaelschen.
+      # ------------------------------------------------------------------
+      - name: Coverage-Stempel erzeugen
+        id: coverage_stamp
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: purpleview/development/.github/actions/coverage-stamp@main
+        with:
+          report-path: coverage/cobertura-coverage.xml
+
+      - name: Stempel in den metrics-Branch schreiben
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: purpleview/development/.github/actions/publish-coverage-stamp@main
+        with:
+          stamp: ${{ steps.coverage_stamp.outputs.stamp }}
+          stamp-line: ${{ steps.coverage_stamp.outputs.stamp-line }}
+          token: ${{ secrets.GITHUB_TOKEN }}

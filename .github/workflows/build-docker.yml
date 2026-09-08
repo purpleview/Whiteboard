@@ -20,7 +20,19 @@ env:
   IMAGE_NAME: purpleview-whiteboard
 
 jobs:
+  test:
+    # Genau die Tests aus tests.yml - keine zweite Definition, die
+    # auseinanderlaufen koennte. Schlagen sie fehl, wird kein Image gebaut.
+    # Der Badge-Commit dort greift nur auf master und bleibt beim Aufruf
+    # fuer einen Tag aus; die Berechtigung muss trotzdem gewaehrt werden,
+    # weil GitHub die Deklaration des aufgerufenen Workflows prueft und
+    # den Lauf sonst gar nicht startet.
+    uses: ./.github/workflows/tests.yml
+    permissions:
+      contents: write
+
   push:
+    needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 

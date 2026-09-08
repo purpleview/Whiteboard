@@ -1,0 +1,230 @@
+{
+  "repo": "Whiteboard",
+  "commit": "95c1ea2d64e370ec8721e1a9643a21edc738b4aa",
+  "commitDate": "2026-09-08T14:24:44+02:00",
+  "generated": "2026-09-08T12:25:29.1999386+00:00",
+  "reports": [
+    "coverage/cobertura-coverage.xml"
+  ],
+  "total": {
+    "coverable": 2035,
+    "covered": 147,
+    "rate": 7.2
+  },
+  "unknownAge": {
+    "coverable": 0,
+    "covered": 0
+  },
+  "byLanguage": {
+    "js": {
+      "coverable": 2035,
+      "covered": 147,
+      "rate": 7.2
+    }
+  },
+  "byMonth": {
+    "2018-02": {
+      "coverable": 283,
+      "covered": 0
+    },
+    "2018-03": {
+      "coverable": 2,
+      "covered": 0
+    },
+    "2019-01": {
+      "coverable": 42,
+      "covered": 0
+    },
+    "2019-02": {
+      "coverable": 74,
+      "covered": 0
+    },
+    "2019-03": {
+      "coverable": 6,
+      "covered": 0
+    },
+    "2019-04": {
+      "coverable": 9,
+      "covered": 0
+    },
+    "2019-05": {
+      "coverable": 16,
+      "covered": 0
+    },
+    "2019-06": {
+      "coverable": 8,
+      "covered": 0
+    },
+    "2019-07": {
+      "coverable": 47,
+      "covered": 0
+    },
+    "2019-08": {
+      "coverable": 2,
+      "covered": 0
+    },
+    "2020-02": {
+      "coverable": 1,
+      "covered": 0
+    },
+    "2020-03": {
+      "coverable": 57,
+      "covered": 0
+    },
+    "2020-04": {
+      "coverable": 141,
+      "covered": 0
+    },
+    "2020-05": {
+      "coverable": 858,
+      "covered": 130
+    },
+    "2020-06": {
+      "coverable": 44,
+      "covered": 0
+    },
+    "2020-07": {
+      "coverable": 2,
+      "covered": 0
+    },
+    "2020-11": {
+      "coverable": 1,
+      "covered": 0
+    },
+    "2020-12": {
+      "coverable": 1,
+      "covered": 0
+    },
+    "2021-02": {
+      "coverable": 18,
+      "covered": 0
+    },
+    "2021-03": {
+      "coverable": 45,
+      "covered": 0
+    },
+    "2021-05": {
+      "coverable": 45,
+      "covered": 0
+    },
+    "2021-06": {
+      "coverable": 13,
+      "covered": 7
+    },
+    "2021-07": {
+      "coverable": 20,
+      "covered": 10
+    },
+    "2021-08": {
+      "coverable": 43,
+      "covered": 0
+    },
+    "2021-09": {
+      "coverable": 2,
+      "covered": 0
+    },
+    "2021-11": {
+      "coverable": 4,
+      "covered": 0
+    },
+    "2021-12": {
+      "coverable": 36,
+      "covered": 0
+    },
+    "2022-01": {
+      "coverable": 2,
+      "covered": 0
+    },
+    "2022-02": {
+      "coverable": 1,
+      "covered": 0
+    },
+    "2022-05": {
+      "coverable": 11,
+      "covered": 0
+    },
+    "2022-06": {
+      "coverable": 54,
+      "covered": 0
+    },
+    "2022-07": {
+      "coverable": 7,
+      "covered": 0
+    },
+    "2022-10": {
+      "coverable": 11,
+      "covered": 0
+    },
+    "2022-11": {
+      "coverable": 3,
+      "covered": 0
+    },
+    "2022-12": {
+      "coverable": 17,
+      "covered": 0
+    },
+    "2023-03": {
+      "coverable": 40,
+      "covered": 0
+    },
+    "2023-04": {
+      "coverable": 24,
+      "covered": 0
+    },
+    "2023-05": {
+      "coverable": 1,
+      "covered": 0
+    },
+    "2024-10": {
+      "coverable": 2,
+      "covered": 0
+    },
+    "2025-09": {
+      "coverable": 5,
+      "covered": 0
+    },
+    "2025-11": {
+      "coverable": 37,
+      "covered": 0
+    }
+  },
+  "byCutoff": {
+    "2026-06-08": {
+      "newer": {
+        "coverable": 0,
+        "covered": 0,
+        "rate": 0.0
+      },
+      "older": {
+        "coverable": 2035,
+        "covered": 147,
+        "rate": 7.2
+      }
+    },
+    "2026-03-08": {
+      "newer": {
+        "coverable": 0,
+        "covered": 0,
+        "rate": 0.0
+      },
+      "older": {
+        "coverable": 2035,
+        "covered": 147,
+        "rate": 7.2
+      }
+    },
+    "2025-09-08": {
+      "newer": {
+        "coverable": 42,
+        "covered": 0,
+        "rate": 0.0
+      },
+      "older": {
+        "coverable": 1993,
+        "covered": 147,
+        "rate": 7.4
+      }
+    }
+  }
+}
+

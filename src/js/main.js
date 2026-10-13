@@ -11,7 +11,7 @@ import { getSubDir } from "./utils";
 import ConfigService from "./services/ConfigService";
 import { v4 as uuidv4 } from "uuid";
 
-const pdfjsLib = require("pdfjs-dist");
+import * as pdfjsLib from "pdfjs-dist";
 
 const urlParams = new URLSearchParams(window.location.search);
 let whiteboardId = urlParams.get("whiteboardid");

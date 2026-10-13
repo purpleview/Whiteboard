@@ -1,15 +1,15 @@
 {
   "repo": "Whiteboard",
-  "commit": "95c1ea2d64e370ec8721e1a9643a21edc738b4aa",
-  "commitDate": "2026-09-08T14:24:44+02:00",
-  "generated": "2026-09-08T12:25:29.1999386+00:00",
+  "commit": "9379a0094823692977a728755b2bf9ab6a73b736",
+  "commitDate": "2026-10-13T10:48:38Z",
+  "generated": "2026-10-13T10:48:48.9912717+00:00",
   "reports": [
     "coverage/cobertura-coverage.xml"
   ],
   "total": {
-    "coverable": 2035,
-    "covered": 147,
-    "rate": 7.2
+    "coverable": 2057,
+    "covered": 345,
+    "rate": 16.8
   },
   "unknownAge": {
     "coverable": 0,
@@ -17,15 +17,15 @@
   },
   "byLanguage": {
     "js": {
-      "coverable": 2035,
-      "covered": 147,
-      "rate": 7.2
+      "coverable": 2057,
+      "covered": 345,
+      "rate": 16.8
     }
   },
   "byMonth": {
     "2018-02": {
       "coverable": 283,
-      "covered": 0
+      "covered": 20
     },
     "2018-03": {
       "coverable": 2,
@@ -33,15 +33,15 @@
     },
     "2019-01": {
       "coverable": 42,
-      "covered": 0
+      "covered": 2
     },
     "2019-02": {
       "coverable": 74,
-      "covered": 0
+      "covered": 5
     },
     "2019-03": {
       "coverable": 6,
-      "covered": 0
+      "covered": 2
     },
     "2019-04": {
       "coverable": 9,
@@ -49,15 +49,15 @@
     },
     "2019-05": {
       "coverable": 16,
-      "covered": 0
+      "covered": 3
     },
     "2019-06": {
       "coverable": 8,
       "covered": 0
     },
     "2019-07": {
-      "coverable": 47,
-      "covered": 0
+      "coverable": 45,
+      "covered": 8
     },
     "2019-08": {
       "coverable": 2,
@@ -72,12 +72,12 @@
       "covered": 0
     },
     "2020-04": {
-      "coverable": 141,
-      "covered": 0
+      "coverable": 137,
+      "covered": 9
     },
     "2020-05": {
-      "coverable": 858,
-      "covered": 130
+      "coverable": 856,
+      "covered": 182
     },
     "2020-06": {
       "coverable": 44,
@@ -96,28 +96,28 @@
       "covered": 0
     },
     "2021-02": {
-      "coverable": 18,
+      "coverable": 17,
       "covered": 0
     },
     "2021-03": {
       "coverable": 45,
-      "covered": 0
+      "covered": 20
     },
     "2021-05": {
       "coverable": 45,
-      "covered": 0
+      "covered": 12
     },
     "2021-06": {
       "coverable": 13,
-      "covered": 7
+      "covered": 10
     },
     "2021-07": {
       "coverable": 20,
-      "covered": 10
+      "covered": 14
     },
     "2021-08": {
-      "coverable": 43,
-      "covered": 0
+      "coverable": 40,
+      "covered": 14
     },
     "2021-09": {
       "coverable": 2,
@@ -132,12 +132,12 @@
       "covered": 0
     },
     "2022-01": {
-      "coverable": 2,
-      "covered": 0
+      "coverable": 1,
+      "covered": 1
     },
     "2022-02": {
       "coverable": 1,
-      "covered": 0
+      "covered": 1
     },
     "2022-05": {
       "coverable": 11,
@@ -161,11 +161,11 @@
     },
     "2022-12": {
       "coverable": 17,
-      "covered": 0
+      "covered": 1
     },
     "2023-03": {
       "coverable": 40,
-      "covered": 0
+      "covered": 5
     },
     "2023-04": {
       "coverable": 24,
@@ -185,44 +185,48 @@
     },
     "2025-11": {
       "coverable": 37,
-      "covered": 0
+      "covered": 2
+    },
+    "2026-10": {
+      "coverable": 35,
+      "covered": 34
     }
   },
   "byCutoff": {
-    "2026-06-08": {
+    "2026-07-13": {
       "newer": {
-        "coverable": 0,
-        "covered": 0,
-        "rate": 0.0
+        "coverable": 35,
+        "covered": 34,
+        "rate": 97.1
       },
       "older": {
-        "coverable": 2035,
-        "covered": 147,
-        "rate": 7.2
+        "coverable": 2022,
+        "covered": 311,
+        "rate": 15.4
       }
     },
-    "2026-03-08": {
+    "2026-04-13": {
       "newer": {
-        "coverable": 0,
-        "covered": 0,
-        "rate": 0.0
+        "coverable": 35,
+        "covered": 34,
+        "rate": 97.1
       },
       "older": {
-        "coverable": 2035,
-        "covered": 147,
-        "rate": 7.2
+        "coverable": 2022,
+        "covered": 311,
+        "rate": 15.4
       }
     },
-    "2025-09-08": {
+    "2025-10-13": {
       "newer": {
-        "coverable": 42,
-        "covered": 0,
-        "rate": 0.0
+        "coverable": 72,
+        "covered": 36,
+        "rate": 50.0
       },
       "older": {
-        "coverable": 1993,
-        "covered": 147,
-        "rate": 7.4
+        "coverable": 1985,
+        "covered": 309,
+        "rate": 15.6
       }
     }
   }

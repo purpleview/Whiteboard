@@ -144,10 +144,7 @@ Done!
 
 #### REST API
 
-You can fully control the whiteboard through a REST API. Explore and test the API for your server version by surfing to: `[yourRootWhiteboardUrl]/apidoc/index.html`
-You can see the API for the Demowhiteboard here: [DemoAPI](https://cloud13.de/testwhiteboard/apidoc/index.html)
-
-Note: This API is pretty new, so be sure to use the latest Whiteboard version.
+You can fully control the whiteboard through a REST API. The endpoints are described in [doc/Whiteboard-API.md](./doc/Whiteboard-API.md).
 
 #### WebDAV (Optional)
 

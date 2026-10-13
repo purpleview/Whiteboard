@@ -146,8 +146,8 @@ function startBackendServer(port) {
             if (accessToken === "" || accessToken == formData["fields"]["at"]) {
                 progressUploadFormData(formData, function (err) {
                     if (err) {
-                        if (err == "403") {
-                            res.status(403);
+                        if (err == "401" || err == "403") {
+                            res.status(Number(err));
                         } else {
                             res.status(500);
                         }
@@ -200,11 +200,13 @@ function startBackendServer(port) {
      */
     app.get("/api/drawToWhiteboard", function (req, res) {
         let query = escapeAllContentStrings(req["query"]);
+        query = purifyEncodedStrings(query);
         const wid = query["wid"];
         const at = query["at"]; //accesstoken
         if (!wid || ReadOnlyBackendService.isReadOnly(wid)) {
             res.status(401); //Unauthorized
             res.end();
+            return;
         }
 
         if (accessToken === "" || accessToken == at) {
@@ -226,7 +228,8 @@ function startBackendServer(port) {
         console.log("Progress new Form Data");
         const fields = escapeAllContentStrings(formData.fields);
         const wid = fields["wid"];
-        if (ReadOnlyBackendService.isReadOnly(wid)) return;
+        // read-only viewers must not upload; answer instead of leaving the request open
+        if (ReadOnlyBackendService.isReadOnly(wid)) return callback("401");
 
         const readOnlyWid = ReadOnlyBackendService.getReadOnlyId(wid);
 
@@ -243,6 +246,7 @@ function startBackendServer(port) {
         fs.ensureDir(savingDir, function (err) {
             if (err) {
                 console.log("Could not create upload folder!", err);
+                callback(err);
                 return;
             }
             let imagedata = fields["imagedata"];
@@ -415,7 +419,15 @@ function startBackendServer(port) {
     }
 
     function purifyTextboxTextInContent(content) {
-        const raw = content["d"][1];
+        const data = content["d"];
+        // the REST API passes whatever the query string parser makes of "d", so the
+        // text can be missing or be no string at all; the client renders d[1] as HTML
+        if (data === null || typeof data !== "object") return content;
+        if (typeof data[1] !== "string") {
+            if (data[1] !== undefined) data[1] = "";
+            return content;
+        }
+        const raw = data[1];
         const decoded = base64decode(raw);
         const purified = DOMPurify.sanitize(decoded, {
             ALLOWED_TAGS: ["div", "br"],
@@ -430,7 +442,7 @@ function startBackendServer(port) {
             console.warn("purified: " + removeControlCharactersForLogs(purified));
         }
 
-        content["d"][1] = base64encode(purified);
+        data[1] = base64encode(purified);
         return content;
     }
 
@@ -450,6 +462,8 @@ function startBackendServer(port) {
         // Will print "unhandledRejection err is not defined"
         console.log("unhandledRejection", error.message);
     });
+
+    return server;
 }
 
 module.exports = startBackendServer;

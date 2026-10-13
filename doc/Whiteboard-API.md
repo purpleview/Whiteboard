@@ -97,11 +97,9 @@ The image is stored as PNG at:
 | Status | Body / meaning                                                                       |
 | ------ | ------------------------------------------------------------------------------------ |
 | 200    | `done`                                                                               |
-| 401    | Wrong access token                                                                   |
+| 401    | Wrong access token, or `wid` is a read-only whiteboard ID                            |
 | 403    | Connection to the WebDAV server failed                                               |
 | 500    | Missing `imagedata`, WebDAV disabled on the server, or the file could not be written |
-
-If `wid` is a read-only whiteboard ID, the server does not answer the request at all.
 
 ```
 curl -i -X POST --data-urlencode "imagedata=data:image/png;base64,iVBORw0KGgo..." \

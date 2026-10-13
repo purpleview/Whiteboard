@@ -150,6 +150,7 @@ All values arrive as strings (e.g. `"10"`), the frontend converts them as needed
 | Status | Body / meaning                                    |
 | ------ | ------------------------------------------------- |
 | 200    | `done`                                            |
+| 400    | `t=setTextboxText` without a text in `d[1]`       |
 | 401    | Missing or read-only `wid`, or wrong access token |
 
 ```

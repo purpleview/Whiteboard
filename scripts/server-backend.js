@@ -201,6 +201,11 @@ function startBackendServer(port) {
     app.get("/api/drawToWhiteboard", function (req, res) {
         let query = escapeAllContentStrings(req["query"]);
         query = purifyEncodedStrings(query);
+        if (!query) {
+            res.status(400); //Bad Request
+            res.end();
+            return;
+        }
         const wid = query["wid"];
         const at = query["at"]; //accesstoken
         if (!wid || ReadOnlyBackendService.isReadOnly(wid)) {
@@ -333,6 +338,7 @@ function startBackendServer(port) {
 
             content = escapeAllContentStrings(content);
             content = purifyEncodedStrings(content);
+            if (!content) return;
 
             if (accessToken === "" || accessToken == content["at"]) {
                 const broadcastTo = (wid) =>
@@ -411,8 +417,10 @@ function startBackendServer(port) {
     }
 
     //Sanitize strings known to be encoded and decoded
+    //Returns null for content that must be dropped
     function purifyEncodedStrings(content) {
-        if (content.hasOwnProperty("t") && content["t"] === "setTextboxText") {
+        if (content === null || typeof content !== "object") return null;
+        if (content["t"] === "setTextboxText") {
             return purifyTextboxTextInContent(content);
         }
         return content;
@@ -420,12 +428,10 @@ function startBackendServer(port) {
 
     function purifyTextboxTextInContent(content) {
         const data = content["d"];
-        // the REST API passes whatever the query string parser makes of "d", so the
-        // text can be missing or be no string at all; the client renders d[1] as HTML
-        if (data === null || typeof data !== "object") return content;
-        if (typeof data[1] !== "string") {
-            if (data[1] !== undefined) data[1] = "";
-            return content;
+        // the REST API passes whatever the query string parser makes of "d"; an event without
+        // a text string would be stored and break the handling of later textbox events
+        if (data === null || typeof data !== "object" || typeof data[1] !== "string") {
+            return null;
         }
         const raw = data[1];
         const decoded = base64decode(raw);

@@ -11,6 +11,7 @@ jest.mock("webdav", () => ({ createClient: jest.fn() }));
 const { once } = require("events");
 const fs = require("fs");
 const path = require("path");
+const { io } = require("socket.io-client");
 const startBackendServer = require("./server-backend");
 const ReadOnlyBackendService = require("./services/ReadOnlyBackendService");
 const s_whiteboard = require("./s_whiteboard");
@@ -79,19 +80,16 @@ describe("GET /api/drawToWhiteboard", () => {
         expect(fromBase64(event.d[1])).toBe("");
     });
 
-    test("Accepts setTextboxText without text instead of failing", async () => {
-        const res = await draw({ wid: "rest-no-text", t: "setTextboxText", "d[0]": "tb1" });
+    test.each([
+        ["without d", {}],
+        ["without text", { "d[0]": "tb1" }],
+        ["with a nested text value", { "d[0]": "tb1", "d[1][a]": "x" }],
+    ])("Rejects setTextboxText %s and stores nothing", async (name, data) => {
+        const wid = "rest-invalid-text";
+        const res = await draw({ wid, t: "setTextboxText", ...data });
 
-        expect(res.status).toBe(200);
-    });
-
-    test("Replaces a nested text value with an empty text", async () => {
-        const wid = "rest-nested-text";
-        const res = await draw({ wid, t: "setTextboxText", "d[0]": "tb1", "d[1][a]": "x" });
-
-        expect(res.status).toBe(200);
-        const [event] = await loadWhiteboard(wid);
-        expect(event.d[1]).toBe("");
+        expect(res.status).toBe(400);
+        expect(await loadWhiteboard(wid)).toEqual([]);
     });
 
     test("Rejects a read-only whiteboard id once and draws nothing", async () => {
@@ -141,5 +139,42 @@ describe("POST /api/upload", () => {
         } finally {
             fs.rmSync(uploadDir, { recursive: true, force: true });
         }
+    });
+});
+
+describe("websocket drawToWhiteboard", () => {
+    let socket;
+
+    afterEach(() => {
+        if (socket) socket.close();
+    });
+
+    async function joinWhiteboard(wid) {
+        socket = io(baseUrl, { path: "/ws-api", transports: ["websocket"] });
+        const config = once(socket, "whiteboardConfig");
+        socket.emit("joinWhiteboard", { wid, windowWidthHeight: { w: 100, h: 100 } });
+        await config;
+    }
+
+    // a round trip that is answered only after the server handled all earlier events
+    async function flush(wid) {
+        const config = once(socket, "whiteboardConfig");
+        socket.emit("joinWhiteboard", { wid, windowWidthHeight: { w: 100, h: 100 } });
+        await config;
+    }
+
+    test("Drops invalid textbox events and keeps handling later ones", async () => {
+        const wid = "ws-invalid-text";
+        await joinWhiteboard(wid);
+
+        socket.emit("drawToWhiteboard", { wid, t: "setTextboxText" });
+        socket.emit("drawToWhiteboard", { wid, t: "setTextboxText", d: null });
+        socket.emit("drawToWhiteboard", null);
+        socket.emit("drawToWhiteboard", { wid, t: "setTextboxText", d: ["tb1", base64("ok")] });
+        await flush(wid);
+
+        const events = await loadWhiteboard(wid);
+        expect(events).toHaveLength(1);
+        expect(fromBase64(events[0].d[1])).toBe("ok");
     });
 });

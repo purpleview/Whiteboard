@@ -12,11 +12,19 @@ const startFrontendDevServer = require("./server-frontend-dev");
 beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, "log").mockImplementation(() => {});
+    delete process.env.DEV_SERVER_ALLOWED_HOSTS;
 });
 
 afterEach(() => {
     console.log.mockRestore();
+    delete process.env.DEV_SERVER_ALLOWED_HOSTS;
 });
+
+function startAndGetOptions() {
+    mockStart.mockResolvedValue();
+    startFrontendDevServer(8080);
+    return mockWebpackDevServer.mock.calls[0][0];
+}
 
 test("Starts the dev server with options first and the compiler second", async () => {
     mockStart.mockResolvedValue();
@@ -55,4 +63,24 @@ test("Logs the error when the dev server fails to start", async () => {
 
     expect(console.log).toHaveBeenCalledWith(error);
     expect(console.log).not.toHaveBeenCalledWith("Listening on port 8080");
+});
+
+test("Lets the browser take the live reload socket port from the page", () => {
+    const options = startAndGetOptions();
+
+    // a fixed port 8080 would bypass a reverse proxy
+    expect(options.client.webSocketURL).toEqual({ port: 0 });
+    expect(options.client.webSocketTransport).toBe(
+        require.resolve("../src/js/devServerWebSocketClient.js")
+    );
+});
+
+test("Keeps the default host check without DEV_SERVER_ALLOWED_HOSTS", () => {
+    expect(startAndGetOptions().allowedHosts).toBe("auto");
+});
+
+test("Allows the host names from DEV_SERVER_ALLOWED_HOSTS", () => {
+    process.env.DEV_SERVER_ALLOWED_HOSTS = " dev.example.org, ,.example.com ";
+
+    expect(startAndGetOptions().allowedHosts).toEqual(["dev.example.org", ".example.com"]);
 });

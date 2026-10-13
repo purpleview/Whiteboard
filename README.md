@@ -52,7 +52,13 @@ You can run this app with and without docker
 
 ## Development
 
-After you have installed the app, run `npm run start:dev` to start the backend and a frontend development server. The website will be accessible on http://locahost:8080.
+After you have installed the app, run `npm run start:dev` to start the backend and a frontend development server. The website will be accessible on http://localhost:8080.
+
+The development server also works behind a reverse proxy (see below); the browser derives the address of its live reload socket from the page URL. The development server only accepts the host names localhost and IP addresses, both in the `Host` header of a request and as origin of the live reload socket. Add the public host name of the proxy as a comma separated list in `DEV_SERVER_ALLOWED_HOSTS` (a leading dot allows all subdomains):
+
+```
+DEV_SERVER_ALLOWED_HOSTS=whiteboard.example.org npm run start:dev
+```
 
 ## Default keyboard shortcuts
 
@@ -186,6 +192,8 @@ Add this to your server part:
 ```
 
 To run it at /whiteboard. Don't forget to change -> YOURIP!
+
+Without the `Upgrade` and `Connection` headers the websockets cannot be established and Socket.IO falls back to HTTP long polling. With `npm run start:dev`, set `DEV_SERVER_ALLOWED_HOSTS` to the public host name (see [Development](#development)).
 
 ## Apache Reverse Proxy configuration
 

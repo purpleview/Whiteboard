@@ -39,7 +39,7 @@ You can run this app with and without docker
 
 ### Without Docker
 
-1. install the latest NodeJs (version >= 12)
+1. install NodeJs 24 (the version used by the Dockerfile and CI)
 2. Clone the app
 3. Run `npm ci` inside the folder
 4. Run `npm run start:prod`

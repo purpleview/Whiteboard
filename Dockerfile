@@ -1,4 +1,4 @@
-FROM node:18 AS base
+FROM node:24 AS base
 
 # Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
@@ -26,7 +26,7 @@ RUN npm run build
 # Final image
 #####################
 
-FROM node:18-alpine
+FROM node:24-alpine
 ENV NODE_ENV=prod
 
 LABEL maintainer="cracker0dks"
@@ -45,7 +45,7 @@ WORKDIR /opt/app
 USER appuser
 
 COPY --chown=appuser:appuser ./package.json ./package-lock.json config.default.yml ./
-RUN npm ci --only=prod
+RUN npm ci --omit=dev
 
 COPY --chown=appuser:appuser scripts ./scripts
 COPY --from=base --chown=appuser:appuser /opt/app/dist ./dist

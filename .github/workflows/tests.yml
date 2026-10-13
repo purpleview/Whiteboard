@@ -36,7 +36,7 @@ jobs:
       - name: Node einrichten
         uses: actions/setup-node@v6
         with:
-          node-version: "18" # wie im Dockerfile
+          node-version: "24" # wie im Dockerfile
           cache: npm
 
       - name: Abhaengigkeiten installieren

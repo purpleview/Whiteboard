@@ -1,8 +1,8 @@
 {
   "repo": "Whiteboard",
-  "commit": "9379a0094823692977a728755b2bf9ab6a73b736",
-  "commitDate": "2026-10-13T10:48:38Z",
-  "generated": "2026-10-13T10:48:48.9912717+00:00",
+  "commit": "588a7b1a8265b205b806c425586b7c1751344c39",
+  "commitDate": "2026-10-30T10:08:43+01:00",
+  "generated": "2026-10-30T09:09:39.0251003+00:00",
   "reports": [
     "coverage/cobertura-coverage.xml"
   ],
@@ -193,7 +193,7 @@
     }
   },
   "byCutoff": {
-    "2026-07-13": {
+    "2026-07-30": {
       "newer": {
         "coverable": 35,
         "covered": 34,
@@ -205,7 +205,7 @@
         "rate": 15.4
       }
     },
-    "2026-04-13": {
+    "2026-04-30": {
       "newer": {
         "coverable": 35,
         "covered": 34,
@@ -217,7 +217,7 @@
         "rate": 15.4
       }
     },
-    "2025-10-13": {
+    "2025-10-30": {
       "newer": {
         "coverable": 72,
         "covered": 36,

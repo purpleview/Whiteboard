@@ -35,9 +35,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write          # release and release assets
-      packages: write          # push to ghcr.io
-      id-token: write          # SBOM attestation
+      contents: write # release and release assets
+      packages: write # push to ghcr.io
+      id-token: write # SBOM attestation
       attestations: write
       artifact-metadata: write
     if: github.event_name == 'push'

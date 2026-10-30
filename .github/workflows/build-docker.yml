@@ -34,6 +34,12 @@ jobs:
   push:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # release and release assets
+      packages: write # push to ghcr.io
+      id-token: write # SBOM attestation
+      attestations: write
+      artifact-metadata: write
     if: github.event_name == 'push'
 
     steps:
@@ -81,14 +87,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
+      # SBOM according to BSI TR-03183-2 (CycloneDX 1.6), see purpleview/sbom-action.
+      # This repository is public and cannot reference the private action directly, so it is
+      # checked out with a read token and used as a local action.
+      - name: Check out sbom-action
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: purpleview/sbom-action
+          ref: v1
+          token: ${{ secrets.SBOM_ACTION_READ_TOKEN }}
+          path: .sbom-action
+          persist-credentials: false
+
+      # The Whiteboard is a fork of cracker0dks/whiteboard and stays under the MIT licence.
       - name: Generate SBOM (CycloneDX JSON) from Docker image
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: anchore/sbom-action@v0
-        id: extract-sbom-json
+        uses: ./.sbom-action
         with:
+          mode: image
           image: ${{ env.IMAGE_ID }}:${{ env.VERSION }}
-          format: cyclonedx-json
-          output-file: cyclonedx-bom-${{ env.VERSION }}.json
+          output: cyclonedx-bom-${{ env.VERSION }}.json
+          own-license: MIT
+          own-packages: ^whiteboard$
+          own-files: |
+            /opt/app/scripts/**/*.js
+            /opt/app/dist/**/*.js
+            !/opt/app/**/*.test.js
+
+      - name: Upload SBOM
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.ref_name }}" "cyclonedx-bom-${{ env.VERSION }}.json" --clobber -R "${{ github.repository }}"
 
       - name: Save tag name to env
         if: startsWith(github.ref, 'refs/tags/v')

@@ -34,6 +34,12 @@ jobs:
   push:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write          # release and release assets
+      packages: write          # push to ghcr.io
+      id-token: write          # SBOM attestation
+      attestations: write
+      artifact-metadata: write
     if: github.event_name == 'push'
 
     steps:
@@ -81,14 +87,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
+      # SBOM according to BSI TR-03183-2 (CycloneDX 1.6), see purpleview/sbom-action.
+      # The Whiteboard is a fork of cracker0dks/whiteboard and stays under the MIT licence.
       - name: Generate SBOM (CycloneDX JSON) from Docker image
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: anchore/sbom-action@v0
-        id: extract-sbom-json
+        uses: purpleview/sbom-action@v1
         with:
+          mode: image
           image: ${{ env.IMAGE_ID }}:${{ env.VERSION }}
-          format: cyclonedx-json
-          output-file: cyclonedx-bom-${{ env.VERSION }}.json
+          output: cyclonedx-bom-${{ env.VERSION }}.json
+          own-license: MIT
+          own-packages: ^whiteboard$
+          own-files: |
+            /opt/app/scripts/**/*.js
+            /opt/app/dist/**/*.js
+            !/opt/app/**/*.test.js
+
+      - name: Upload SBOM
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.ref_name }}" "cyclonedx-bom-${{ env.VERSION }}.json" --clobber -R "${{ github.repository }}"
 
       - name: Save tag name to env
         if: startsWith(github.ref, 'refs/tags/v')

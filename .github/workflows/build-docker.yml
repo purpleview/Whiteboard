@@ -41,7 +41,7 @@ jobs:
 
       - name: Build image
         run: |
-          IMAGE_ID=docker.pkg.github.com/purpleview/whiteboard/$IMAGE_NAME
+          IMAGE_ID=ghcr.io/purpleview/whiteboard/$IMAGE_NAME
           VERSION=$(echo ${{ github.ref_name }} | sed -e 's/^v//')
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
@@ -50,7 +50,7 @@ jobs:
           docker build . --build-arg DOCKER_TAG=$VERSION --tag image
 
       - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push image
         run: |
